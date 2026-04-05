@@ -9,6 +9,7 @@ interface Props {
   align?: 'left' | 'center' | 'right';
   showCta?: boolean;
   initialOpacity?: number; // output[0] — default 0 for late-appear overlays, 1 for first
+  logoSrc?: string;        // optional logo image above heading
 }
 
 export default function TextOverlay({
@@ -19,6 +20,7 @@ export default function TextOverlay({
   align = 'center',
   showCta = false,
   initialOpacity = 0,
+  logoSrc,
 }: Props) {
   const opacity = useTransform(
     scrollYProgress,
@@ -40,9 +42,20 @@ export default function TextOverlay({
       className={`fixed inset-0 z-20 flex items-center pointer-events-none ${justifyMap[align]}`}
     >
       <div
-        className={`max-w-lg ${paddingMap[align]} ${textAlignMap[align]}`}
+        className={`max-w-lg ${paddingMap[align]} ${textAlignMap[align]} flex flex-col items-center`}
         style={{ textShadow: '0 2px 20px rgba(0,0,0,0.4)' }}
       >
+        {logoSrc && (
+          <img
+            src={logoSrc}
+            alt="SkyCielo"
+            className="mb-8 h-16 md:h-20 lg:h-24 object-contain"
+            style={{
+              filter: 'brightness(0) invert(1)',
+              dropShadow: '0 2px 20px rgba(0,0,0,0.4)',
+            } as React.CSSProperties}
+          />
+        )}
         <h2
           className="text-white/90 text-3xl md:text-5xl lg:text-6xl font-light tracking-[0.08em] leading-tight mb-5"
           style={{ fontFamily: '"Cormorant Garamond", Georgia, serif' }}

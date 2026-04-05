@@ -2,8 +2,6 @@
 import { useEffect, useRef } from 'react';
 
 const TOTAL = 240;          // 80 frames × 3 scenes
-const LOGO_FADE_START = 155;
-const LOGO_FADE_END   = 175;
 
 interface Props {
   onLoadProgress: (p: number) => void;
@@ -19,7 +17,6 @@ export default function VillaScroll({ onLoadProgress, onLoaded }: Props) {
 
     // ── Local state — lives entirely inside this one effect ──
     const frames: (HTMLImageElement | null)[] = Array(TOTAL).fill(null);
-    let logoImg: HTMLImageElement | null = null;
     let current = 0;
     let target  = 0;
     let raf     = 0;
@@ -52,27 +49,6 @@ export default function VillaScroll({ onLoadProgress, onLoaded }: Props) {
       const y = (ch - h) / 2;
 
       ctx.drawImage(img, x, y, w, h);
-
-      // ── Logo overlay ──
-      if (logoImg?.complete && logoImg.naturalWidth > 0) {
-        let alpha = 1;
-        if (idx >= LOGO_FADE_END) {
-          alpha = 0;
-        } else if (idx >= LOGO_FADE_START) {
-          alpha = 1 - (idx - LOGO_FADE_START) / (LOGO_FADE_END - LOGO_FADE_START);
-        }
-        if (alpha > 0) {
-          const dpr = Math.min(window.devicePixelRatio || 1, 2);
-          const pad = 28 * dpr;
-          const lh  = Math.min(44 * dpr, cw * 0.065);
-          const lw  = (logoImg.naturalWidth / logoImg.naturalHeight) * lh;
-          ctx.save();
-          ctx.globalAlpha = alpha;
-          ctx.filter = 'brightness(0) invert(1)';
-          ctx.drawImage(logoImg, pad, pad, lw, lh);
-          ctx.restore();
-        }
-      }
     };
 
     // ── RAF loop: lerp current → target, draw every changed frame ──
@@ -86,11 +62,12 @@ export default function VillaScroll({ onLoadProgress, onLoaded }: Props) {
     };
     raf = requestAnimationFrame(loop);
 
-    // ── Scroll listener ──
+    // ── Scroll listener — map frames only to the 600vh scroll zone ──
     const onScroll = () => {
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      if (maxScroll > 0) {
-        target = (window.scrollY / maxScroll) * (TOTAL - 1);
+      // 600vh spacer minus one viewport = actual scroll distance for animation
+      const scrollZoneEnd = window.innerHeight * 5; // 500vh
+      if (scrollZoneEnd > 0) {
+        target = Math.min((window.scrollY / scrollZoneEnd) * (TOTAL - 1), TOTAL - 1);
       }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -133,11 +110,6 @@ export default function VillaScroll({ onLoadProgress, onLoaded }: Props) {
       }
     }
 
-    // ── Load logo ──
-    const logo = new Image();
-    logo.onload = () => { if (active) logoImg = logo; };
-    logo.src = '/logo.png';
-
     // ── Cleanup ──
     return () => {
       active = false;
@@ -152,7 +124,7 @@ export default function VillaScroll({ onLoadProgress, onLoaded }: Props) {
       {/* Scroll distance — 600vh of scrollable space */}
       <div style={{ height: '600vh', pointerEvents: 'none' }} />
 
-      {/* Canvas always fixed to viewport — never affected by overflow or sticky bugs */}
+      {/* Canvas always fixed to viewport */}
       <canvas
         ref={canvasRef}
         style={{
