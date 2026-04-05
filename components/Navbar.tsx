@@ -1,15 +1,30 @@
+'use client';
+import { motion, useScroll, useTransform } from 'framer-motion';
+
 export default function Navbar() {
+  const { scrollY } = useScroll();
+  
+  // Animate background opacity from 0 to 0.8 over the first 100px of scroll
+  const bgOpacity = useTransform(scrollY, [0, 100], [0, 0.8]);
+  const blurValue = useTransform(scrollY, [0, 100], [0, 12]);
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 lg:px-16 py-6 pointer-events-none">
+    <motion.nav 
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 lg:px-16 py-6"
+      style={{ 
+        backgroundColor: useTransform(bgOpacity, (o) => `rgba(15,14,12,${o})`),
+        backdropFilter: useTransform(blurValue, (b) => `blur(${b}px)`),
+        WebkitBackdropFilter: useTransform(blurValue, (b) => `blur(${b}px)`),
+      }}
+    >
       <a href="/" className="pointer-events-auto">
         <img
           src="/logo.png"
           alt="SkyCielo"
           className="h-8 object-contain"
           style={{
-            filter: 'brightness(0) invert(1)',
-            dropShadow: '0 2px 8px rgba(0,0,0,0.4)',
-          } as React.CSSProperties}
+            filter: 'brightness(0) invert(1) drop-shadow(0 2px 8px rgba(0,0,0,0.4))',
+          }}
         />
       </a>
       <div className="flex items-center gap-10 pointer-events-auto">
@@ -24,6 +39,6 @@ export default function Navbar() {
           </a>
         ))}
       </div>
-    </nav>
+    </motion.nav>
   );
 }

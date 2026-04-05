@@ -1,5 +1,6 @@
 'use client';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import { useEffect } from 'react';
 
 interface Props {
   progress: number;
@@ -9,6 +10,14 @@ interface Props {
 export default function LoadingScreen({ progress, isLoaded }: Props) {
   const pct = Math.round(progress * 100);
   const circ = 2 * Math.PI * 20; // ~125.66
+
+  // Drive strokeDashoffset via MotionValue for GPU-only updates (no React re-render)
+  const progressMV = useMotionValue(progress);
+  const dashOffset = useTransform(progressMV, (p) => circ * (1 - p));
+
+  useEffect(() => {
+    progressMV.set(progress);
+  }, [progress, progressMV]);
 
   return (
     <AnimatePresence>
@@ -34,8 +43,7 @@ export default function LoadingScreen({ progress, isLoaded }: Props) {
                 strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeDasharray={circ}
-                strokeDashoffset={circ * (1 - progress)}
-                style={{ transition: 'stroke-dashoffset 0.3s ease' }}
+                style={{ strokeDashoffset: dashOffset }}
               />
             </svg>
           </div>

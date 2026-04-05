@@ -1,7 +1,10 @@
 'use client';
 import { useEffect, useRef } from 'react';
+import { useReducedMotion } from 'framer-motion';
+import { SCROLL_ZONE_VH, SCROLL_ZONE_SCROLLABLE_FACTOR } from '@/lib/constants';
 
-const TOTAL = 240;          // 80 frames × 3 scenes
+const TOTAL = 240;
+const BATCH_SIZE = 40; // Load 40 frames eagerly to dismiss loading screen
 
 interface Props {
   onLoadProgress: (p: number) => void;
@@ -10,20 +13,19 @@ interface Props {
 
 export default function VillaScroll({ onLoadProgress, onLoaded }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // ── Local state — lives entirely inside this one effect ──
     const frames: (HTMLImageElement | null)[] = Array(TOTAL).fill(null);
     let current = 0;
     let target  = 0;
     let raf     = 0;
     let loadedCount = 0;
-    let active  = true; // guard against StrictMode double-invoke cleanup
+    let active  = true;
 
-    // ── Canvas sizing ──
     const setSize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width  = window.innerWidth  * dpr;
@@ -31,7 +33,6 @@ export default function VillaScroll({ onLoadProgress, onLoaded }: Props) {
     };
     setSize();
 
-    // ── Cover-fill draw (no clearRect — previous frame persists if current missing) ──
     const drawFrame = (fi: number) => {
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
@@ -51,8 +52,8 @@ export default function VillaScroll({ onLoadProgress, onLoaded }: Props) {
       ctx.drawImage(img, x, y, w, h);
     };
 
-    // ── RAF loop: lerp current → target, draw every changed frame ──
     const loop = () => {
+      if (shouldReduceMotion) return;
       const diff = target - current;
       if (Math.abs(diff) > 0.08) {
         current += diff * 0.12;
@@ -60,71 +61,86 @@ export default function VillaScroll({ onLoadProgress, onLoaded }: Props) {
       }
       raf = requestAnimationFrame(loop);
     };
-    raf = requestAnimationFrame(loop);
+    if (!shouldReduceMotion) raf = requestAnimationFrame(loop);
 
-    // ── Scroll listener — map frames only to the 600vh scroll zone ──
     const onScroll = () => {
-      // 600vh spacer minus one viewport = actual scroll distance for animation
-      const scrollZoneEnd = window.innerHeight * 5; // 500vh
+      if (shouldReduceMotion) return;
+      const scrollZoneEnd = window.innerHeight * SCROLL_ZONE_SCROLLABLE_FACTOR;
       if (scrollZoneEnd > 0) {
         target = Math.min((window.scrollY / scrollZoneEnd) * (TOTAL - 1), TOTAL - 1);
       }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
 
-    // ── Resize listener ──
     const onResize = () => {
       setSize();
       drawFrame(current);
     };
     window.addEventListener('resize', onResize);
 
-    // ── Preload all 240 frames ──
-    for (let s = 0; s < 3; s++) {
-      for (let f = 0; f < 80; f++) {
-        const idx = s * 80 + f;
+    // ── Optimized Loader ──
+    const loadFrame = (idx: number, priority: 'high' | 'low' = 'low'): Promise<void> => {
+      return new Promise((resolve) => {
+        const s = Math.floor(idx / 80);
+        const f = idx % 80;
         const img = new Image();
-
+        if (priority === 'high') (img as any).fetchPriority = 'high';
+        
         img.onload = () => {
           if (!active) return;
           frames[idx] = img;
           loadedCount++;
-
-          // Report progress
-          if (loadedCount % 12 === 0 || loadedCount === TOTAL) {
-            onLoadProgress(loadedCount / TOTAL);
-          }
-          // Draw frame 0 immediately so something shows behind the loading screen
           if (idx === 0) drawFrame(0);
-          // Signal ready
-          if (loadedCount === TOTAL) onLoaded();
+          resolve();
         };
-
         img.onerror = () => {
-          if (!active) return;
           loadedCount++;
-          if (loadedCount === TOTAL) onLoaded();
+          resolve();
         };
-
         img.src = `/frames/s${s + 1}_${String(f + 1).padStart(3, '0')}.png`;
-      }
-    }
+      });
+    };
 
-    // ── Cleanup ──
+    const runLoader = async () => {
+      // 1. Prioritized Frame 0
+      await loadFrame(0, 'high');
+
+      // 2. Eager Batch (first 40 frames)
+      const eagerPromises = [];
+      for (let i = 1; i < BATCH_SIZE; i++) {
+        eagerPromises.push(loadFrame(i));
+      }
+      await Promise.all(eagerPromises);
+      
+      onLoadProgress(BATCH_SIZE / TOTAL);
+      onLoaded(); // Signal ready to interact
+
+      // 3. Background Batch (remaining frames)
+      // We load these sequentially or in small chunks to avoid saturating the network
+      for (let i = BATCH_SIZE; i < TOTAL; i++) {
+        if (!active) break;
+        await loadFrame(i);
+        if (i % 20 === 0 || i === TOTAL - 1) {
+          onLoadProgress(loadedCount / TOTAL);
+        }
+      }
+    };
+    runLoader();
+
     return () => {
       active = false;
       cancelAnimationFrame(raf);
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onResize);
+      for (let i = 0; i < frames.length; i++) {
+        frames[i] = null;
+      }
     };
-  }, [onLoadProgress, onLoaded]);
+  }, [onLoadProgress, onLoaded, shouldReduceMotion]);
 
   return (
     <>
-      {/* Scroll distance — 600vh of scrollable space */}
-      <div style={{ height: '600vh', pointerEvents: 'none' }} />
-
-      {/* Canvas always fixed to viewport */}
+      <div style={{ height: `${SCROLL_ZONE_VH}vh`, pointerEvents: 'none' }} />
       <canvas
         ref={canvasRef}
         style={{
