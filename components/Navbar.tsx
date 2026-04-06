@@ -28,16 +28,28 @@ export default function Navbar() {
         />
       </a>
       <div className="flex items-center gap-10 pointer-events-auto">
-        {['Properties', 'Contact'].map((label) => (
-          <a
-            key={label}
-            href="#"
-            className="text-white/70 text-xs tracking-[0.2em] uppercase font-light hover:text-white transition-colors duration-300"
-            style={{ textShadow: '0 1px 6px rgba(0,0,0,0.6)' }}
-          >
-            {label}
-          </a>
-        ))}
+        <a
+          href="#about"
+          onClick={(e) => {
+            e.preventDefault();
+            document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          className="text-white/70 text-xs tracking-[0.2em] uppercase font-light hover:text-white transition-colors duration-300"
+          style={{ textShadow: '0 1px 6px rgba(0,0,0,0.6)' }}
+        >
+          About Us
+        </a>
+        <a
+          href="#contact"
+          onClick={(e) => {
+            e.preventDefault();
+            document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          className="text-white/70 text-xs tracking-[0.2em] uppercase font-light hover:text-white transition-colors duration-300"
+          style={{ textShadow: '0 1px 6px rgba(0,0,0,0.6)' }}
+        >
+          Contact Us
+        </a>
       </div>
     </motion.nav>
   );

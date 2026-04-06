@@ -82,7 +82,6 @@ export default function Home() {
         heading="Your next chapter starts here."
         subtext="SkyCielo represents exceptional homes across city. This is the standard we hold."
         align="center"
-        showCta
       />
 
       {/* ── Logo Full Section — scrolls in as next page after animation ── */}
@@ -100,7 +99,7 @@ export default function Home() {
       </section>
 
       {/* ── About Us Sections ── */}
-      <div style={{ zIndex: 10, position: 'relative', background: '#0f0e0c', color: '#f5f0e8', fontFamily: "'Inter', sans-serif" }}>
+      <div id="about" style={{ zIndex: 10, position: 'relative', background: '#0f0e0c', color: '#f5f0e8', fontFamily: "'Inter', sans-serif" }}>
         {/* ── Hero banner ─────────────────────────────────────────── */}
         <section style={{
           position: 'relative',
@@ -341,6 +340,7 @@ export default function Home() {
 
         {/* ── Contact Section (Matched to Image Layout) ────────────────────── */}
         <section 
+          id="contact"
           className="relative bg-[#D3BBAF] text-[#0f0e0c] grid items-start grid-cols-1 md:grid-cols-[minmax(250px,1fr)_minmax(400px,1.5fr)] gap-[60px] md:gap-[clamp(40px,6vw,80px)]"
           style={{ padding: 'clamp(60px, 8vw, 120px) 8vw clamp(30px, 4vw, 60px) 8vw' }}
         >
