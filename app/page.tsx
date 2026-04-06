@@ -338,19 +338,135 @@ export default function Home() {
         </section>
 
         <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #b59a72 40%, transparent)', margin: '0 8vw' }} />
-        <div style={{ height: 80 }} />
+
+        {/* ── Contact Section (Matched to Image Layout) ────────────────────── */}
+        <section 
+          className="relative bg-[#D3BBAF] text-[#0f0e0c] grid items-start grid-cols-1 md:grid-cols-[minmax(250px,1fr)_minmax(400px,1.5fr)] gap-[60px] md:gap-[clamp(40px,6vw,80px)]"
+          style={{ padding: 'clamp(60px, 8vw, 120px) 8vw clamp(30px, 4vw, 60px) 8vw' }}
+        >
+           {/* Left side: Heading */}
+           <div className="flex flex-col md:h-full">
+              <div style={{ flexGrow: 1 }}>
+                 <h2 style={{
+                   fontFamily: "'Inter', sans-serif",
+                   fontSize: 'clamp(2.5rem, 4vw, 4rem)',
+                   fontWeight: 400,
+                   letterSpacing: '-0.02em',
+                   margin: '0 0 24px',
+                   color: '#0f0e0c',
+                 }}>
+                   Contact us
+                 </h2>
+                 <p style={{
+                   fontSize: '1rem',
+                   lineHeight: 1.5,
+                   color: 'rgba(15, 14, 12, 0.7)',
+                   maxWidth: 280,
+                 }}>
+                   Get in touch with us for any enquiries<br />and questions
+                 </p>
+
+                 {/* Contact Form */}
+                 <form 
+                   onSubmit={(e) => {
+                     e.preventDefault();
+                     alert("Contact form will be wired up to send an email to vigneshpoovannaas@gmail.com!");
+                   }}
+                   style={{ display: 'flex', flexDirection: 'column', gap: 24, margin: '40px 0', maxWidth: 360 }}
+                 >
+                    <input 
+                      type="text" 
+                      placeholder="Name" 
+                      required
+                      className="w-full bg-transparent border-0 border-b border-[#0f0e0c]/20 py-2 text-[0.95rem] text-[#0f0e0c] outline-none focus:border-[#0f0e0c] focus:ring-0 transition-colors placeholder:text-[#0f0e0c]/40"
+                    />
+                    <input 
+                      type="tel" 
+                      placeholder="Phone Number" 
+                      required
+                      className="w-full bg-transparent border-0 border-b border-[#0f0e0c]/20 py-2 text-[0.95rem] text-[#0f0e0c] outline-none focus:border-[#0f0e0c] focus:ring-0 transition-colors placeholder:text-[#0f0e0c]/40"
+                    />
+                    <input 
+                      type="email" 
+                      placeholder="Email" 
+                      required
+                      className="w-full bg-transparent border-0 border-b border-[#0f0e0c]/20 py-2 text-[0.95rem] text-[#0f0e0c] outline-none focus:border-[#0f0e0c] focus:ring-0 transition-colors placeholder:text-[#0f0e0c]/40"
+                    />
+                    <textarea 
+                      placeholder="Your Query"
+                      required
+                      rows={3} 
+                      className="w-full bg-transparent border-0 border-b border-[#0f0e0c]/20 py-2 text-[0.95rem] text-[#0f0e0c] outline-none focus:border-[#0f0e0c] focus:ring-0 transition-colors resize-none placeholder:text-[#0f0e0c]/40"
+                    />
+                    <button 
+                      type="submit" 
+                      className="self-start mt-2 px-8 py-3 bg-[#0f0e0c] text-[#f5f0e8] text-[0.9rem] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
+                    >
+                      Send Message
+                    </button>
+                 </form>
+              </div>
+
+              {/* Bottom Left: Copyright */}
+              <div className="mt-8 md:mt-auto">
+                 <p style={{ fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(15,14,12,0.5)', margin: 0 }}>
+                    © 2025 SkyCielo. All rights reserved.
+                 </p>
+              </div>
+           </div>
+           
+           {/* Right side: 2x2 Grid + Image */}
+           <div style={{ display: 'flex', flexDirection: 'column', gap: 60 }}>
+              
+              {/* 2x2 Grid using CSS Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-[32px] sm:gap-y-[40px] gap-x-[20px]">
+                 {/* Item 1: Phone/General (adapted to Phone) */}
+                 <div>
+                    <h3 style={{ fontSize: '0.85rem', color: 'rgba(15, 14, 12, 0.5)', fontWeight: 400, marginBottom: 12 }}>phone</h3>
+                    <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 500, lineHeight: 1.6 }}>
+                       <a href="tel:+919036078155" style={{ textDecoration: 'none', color: 'inherit' }}>+91 90360 78155</a>
+                    </p>
+                 </div>
+
+                 {/* Item 2: Email */}
+                 <div>
+                    <h3 style={{ fontSize: '0.85rem', color: 'rgba(15, 14, 12, 0.5)', fontWeight: 400, marginBottom: 12 }}>email</h3>
+                    <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 500, lineHeight: 1.6 }}>
+                       <a href="mailto:skycielo.realtyventure@gmail.com" style={{ textDecoration: 'none', color: 'inherit' }}>skycielo.realtyventure@gmail.com</a>
+                    </p>
+                 </div>
+
+                 {/* Item 3: Social/Collaborations */}
+                 <div>
+                    <h3 style={{ fontSize: '0.85rem', color: 'rgba(15, 14, 12, 0.5)', fontWeight: 400, marginBottom: 12 }}>social</h3>
+                    <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 500, lineHeight: 1.6 }}>
+                       <a href="https://www.instagram.com/skycielo.realtyventures" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>@skycielo.realtyventures</a>
+                    </p>
+                 </div>
+
+                 {/* Item 4: Address */}
+                 <div>
+                    <h3 style={{ fontSize: '0.85rem', color: 'rgba(15, 14, 12, 0.5)', fontWeight: 400, marginBottom: 12 }}>address</h3>
+                    <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 500, lineHeight: 1.6, maxWidth: 220 }}>
+                       No.30, CK plaza, 1st Floor, Gangappa Block, Bellary Main Road, Gangenahalli, Bangalore - 560032
+                    </p>
+                 </div>
+              </div>
+
+              {/* The Image from the layout */}
+              <div style={{ position: 'relative', width: '100%', height: 320, marginTop: 20 }}>
+                 <Image
+                    src="/contact-image.png"
+                    alt="Minimalist luxury interior"
+                    fill
+                    style={{ objectFit: 'cover' }}
+                 />
+              </div>
+
+           </div>
+        </section>
       </div>
 
-      {/* ── Footer — sits above fixed canvas ── */}
-      <footer
-        className="relative flex flex-col md:flex-row items-center justify-between px-8 lg:px-16 py-8 gap-4 bg-white border-t border-stone-100"
-        style={{ zIndex: 10 }}
-      >
-        <img src="/logo.png" alt="SkyCielo" className="h-7 object-contain opacity-60" />
-        <p className="text-stone-400 text-xs tracking-[0.2em] uppercase">
-          © 2025 SkyCielo. All rights reserved.
-        </p>
-      </footer>
     </>
   );
 }
