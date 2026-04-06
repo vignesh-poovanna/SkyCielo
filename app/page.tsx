@@ -5,8 +5,17 @@ import VillaScroll from '@/components/VillaScroll';
 import TextOverlay from '@/components/TextOverlay';
 import LoadingScreen from '@/components/LoadingScreen';
 import Navbar from '@/components/Navbar';
+import Image from 'next/image';
 
 import { SCROLL_ZONE_SCROLLABLE_FACTOR } from '@/lib/constants';
+
+const COMMIT_ITEMS = [
+  { icon: '⌂', text: 'Curating thoughtfully planned layouts for future-ready homes' },
+  { icon: '✦', text: 'Creating customizable villas inspired by European sophistication' },
+  { icon: '◈', text: 'Blending luxury, comfort, and functionality in every space' },
+  { icon: '◇', text: 'Upholding transparency, quality, and trust at every step' },
+  { icon: '❋', text: 'Building communities that inspire a sense of belonging' },
+];
 
 export default function Home() {
   const [loadProgress, setLoadProgress] = useState(0);
@@ -79,7 +88,7 @@ export default function Home() {
       {/* ── Logo Full Section — scrolls in as next page after animation ── */}
       <section
         className="relative flex items-center justify-center overflow-hidden"
-        style={{ zIndex: 10, minHeight: '100vh', backgroundColor: '#546B41' }}
+        style={{ zIndex: 10, minHeight: '100vh', backgroundColor: '#D3BBAF' }}
       >
         <div className="flex items-center justify-center px-8">
           <img
@@ -89,6 +98,248 @@ export default function Home() {
           />
         </div>
       </section>
+
+      {/* ── About Us Sections ── */}
+      <div style={{ zIndex: 10, position: 'relative', background: '#0f0e0c', color: '#f5f0e8', fontFamily: "'Inter', sans-serif" }}>
+        {/* ── Hero banner ─────────────────────────────────────────── */}
+        <section style={{
+          position: 'relative',
+          height: '38vh',
+          minHeight: 280,
+          display: 'flex',
+          alignItems: 'flex-end',
+          overflow: 'hidden',
+        }}>
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(160deg, #1a1a14 0%, #2b3326 60%, #546B41 100%)',
+            opacity: 0.9,
+          }} />
+          <div style={{
+            position: 'absolute', inset: 0, opacity: 0.04,
+            backgroundImage: 'repeating-linear-gradient(0deg,#f5f0e8 0,#f5f0e8 1px,transparent 1px,transparent 80px), repeating-linear-gradient(90deg,#f5f0e8 0,#f5f0e8 1px,transparent 1px,transparent 80px)',
+          }} />
+          <div style={{ position: 'relative', zIndex: 1, padding: '0 8vw 56px' }}>
+            <p style={{ letterSpacing: '0.3em', fontSize: 11, color: '#b59a72', textTransform: 'uppercase', marginBottom: 12 }}>
+              Sky Cielo · Our Story
+            </p>
+            <h1 style={{
+              fontFamily: "'Cormorant Garamond', Georgia, serif",
+              fontSize: 'clamp(2.6rem, 5vw, 5rem)',
+              fontWeight: 300,
+              lineHeight: 1.1,
+              margin: 0,
+              color: '#f5f0e8',
+            }}>
+              About Us
+            </h1>
+          </div>
+        </section>
+
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #b59a72 40%, transparent)', margin: '0 8vw' }} />
+
+        {/* ── PAGE 1: Vision ──────────────────────────────────────── */}
+        <section style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          minHeight: '100vh',
+          gap: 0,
+        }}>
+          <div style={{ position: 'relative', overflow: 'hidden', minHeight: 520 }}>
+            <Image
+              src="/about-vision.png"
+              alt="Sky Cielo Vision — European-inspired community"
+              fill
+              style={{ objectFit: 'cover', objectPosition: 'center' }}
+            />
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: 'linear-gradient(to right, transparent 70%, #0f0e0c 100%)',
+            }} />
+          </div>
+
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            padding: 'clamp(48px, 7vw, 110px) clamp(40px, 6vw, 96px)',
+          }}>
+            <p style={{ letterSpacing: '0.3em', fontSize: 11, color: '#546B41', textTransform: 'uppercase', marginBottom: 20 }}>
+              01 · Vision
+            </p>
+            <h2 style={{
+              fontFamily: "'Cormorant Garamond', Georgia, serif",
+              fontSize: 'clamp(2rem, 3.2vw, 3.2rem)',
+              fontWeight: 300,
+              lineHeight: 1.2,
+              margin: '0 0 32px',
+              color: '#f5f0e8',
+            }}>
+              Timeless communities.<br />
+              <em style={{ color: '#b59a72', fontStyle: 'italic' }}>Enduring legacies.</em>
+            </h2>
+            <div style={{ width: 48, height: 1, background: '#b59a72', marginBottom: 32 }} />
+            <p style={{
+              fontSize: 'clamp(0.95rem, 1.1vw, 1.1rem)',
+              lineHeight: 1.85,
+              color: 'rgba(245,240,232,0.75)',
+              maxWidth: 480,
+            }}>
+              At Sky Cielo, we envision crafting timeless, European-inspired communities where land, architecture,
+              and lifestyle exist in perfect harmony. Inspired by classical French elegance, we transform every
+              plot into the foundation of a legacy and every residence into a statement of refined living.
+            </p>
+          </div>
+        </section>
+
+        {/* ── PAGE 2a: Mission ────────────────────────────────────── */}
+        <section style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          minHeight: '100vh',
+          gap: 0,
+          direction: 'rtl',
+        }}>
+          <div style={{ position: 'relative', overflow: 'hidden', minHeight: 520 }}>
+            <Image
+              src="/about-mission.png"
+              alt="Sky Cielo Mission — premium European villa"
+              fill
+              style={{ objectFit: 'cover', objectPosition: 'center' }}
+            />
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: 'linear-gradient(to left, transparent 70%, #0f0e0c 100%)',
+            }} />
+          </div>
+
+          <div style={{
+            direction: 'ltr',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            padding: 'clamp(48px, 7vw, 110px) clamp(40px, 6vw, 96px)',
+          }}>
+            <p style={{ letterSpacing: '0.3em', fontSize: 11, color: '#546B41', textTransform: 'uppercase', marginBottom: 20 }}>
+              02 · Mission
+            </p>
+            <h2 style={{
+              fontFamily: "'Cormorant Garamond', Georgia, serif",
+              fontSize: 'clamp(2rem, 3.2vw, 3.2rem)',
+              fontWeight: 300,
+              lineHeight: 1.2,
+              margin: '0 0 32px',
+              color: '#f5f0e8',
+            }}>
+              Design excellence.<br />
+              <em style={{ color: '#b59a72', fontStyle: 'italic' }}>Lasting value.</em>
+            </h2>
+            <div style={{ width: 48, height: 1, background: '#b59a72', marginBottom: 32 }} />
+            <p style={{
+              fontSize: 'clamp(0.95rem, 1.1vw, 1.1rem)',
+              lineHeight: 1.85,
+              color: 'rgba(245,240,232,0.75)',
+              maxWidth: 480,
+            }}>
+              To deliver premium plotted developments, bespoke villas, and elegant residences that embody
+              design excellence and lasting value.
+            </p>
+          </div>
+        </section>
+
+        {/* ── PAGE 2b: We Commit To ───────────────────────────────── */}
+        <section style={{
+          position: 'relative',
+          overflow: 'hidden',
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+        }}>
+          <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+            <Image
+              src="/about-commit.png"
+              alt="Sky Cielo commitment — refined villa interior"
+              fill
+              style={{ objectFit: 'cover', objectPosition: 'center top' }}
+            />
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: 'linear-gradient(to bottom, rgba(15,14,12,0.78) 0%, rgba(15,14,12,0.92) 100%)',
+            }} />
+          </div>
+
+          <div style={{
+            position: 'relative', zIndex: 1,
+            padding: 'clamp(64px, 8vw, 120px) 8vw',
+            maxWidth: 1100,
+            margin: '0 auto',
+            width: '100%',
+          }}>
+            <p style={{ letterSpacing: '0.3em', fontSize: 11, color: '#546B41', textTransform: 'uppercase', marginBottom: 20 }}>
+              03 · We Commit To
+            </p>
+            <h2 style={{
+              fontFamily: "'Cormorant Garamond', Georgia, serif",
+              fontSize: 'clamp(2rem, 3.5vw, 3.6rem)',
+              fontWeight: 300,
+              lineHeight: 1.15,
+              margin: '0 0 16px',
+              color: '#f5f0e8',
+            }}>
+              Our promise to you —<br />
+              <em style={{ color: '#b59a72', fontStyle: 'italic' }}>in every detail.</em>
+            </h2>
+            <div style={{ width: 48, height: 1, background: '#b59a72', margin: '28px 0 52px' }} />
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+              gap: '1px',
+              background: 'rgba(181,154,114,0.15)',
+              border: '1px solid rgba(181,154,114,0.15)',
+            }}>
+              {COMMIT_ITEMS.map((item, i) => (
+                <div
+                  key={i}
+                  style={{
+                    padding: '36px 32px',
+                    background: 'rgba(15,14,12,0.55)',
+                    backdropFilter: 'blur(8px)',
+                    transition: 'background 0.3s',
+                    display: 'flex',
+                    gap: 20,
+                    alignItems: 'flex-start',
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.background = 'rgba(84,107,65,0.18)')}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'rgba(15,14,12,0.55)')}
+                >
+                  <span style={{
+                    fontSize: '1.4rem',
+                    color: '#b59a72',
+                    lineHeight: 1,
+                    marginTop: 2,
+                    flexShrink: 0,
+                  }}>
+                    {item.icon}
+                  </span>
+                  <p style={{
+                    fontSize: '0.95rem',
+                    lineHeight: 1.75,
+                    color: 'rgba(245,240,232,0.8)',
+                    margin: 0,
+                  }}>
+                    {item.text}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #b59a72 40%, transparent)', margin: '0 8vw' }} />
+        <div style={{ height: 80 }} />
+      </div>
 
       {/* ── Footer — sits above fixed canvas ── */}
       <footer
