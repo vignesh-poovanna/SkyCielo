@@ -6,16 +6,18 @@ import TextOverlay from '@/components/TextOverlay';
 import LoadingScreen from '@/components/LoadingScreen';
 import Navbar from '@/components/Navbar';
 
+import { SCROLL_ZONE_SCROLLABLE_FACTOR } from '@/lib/constants';
+
 export default function Home() {
   const [loadProgress, setLoadProgress] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Custom scroll progress scoped to the 600vh scroll zone only
+  // Custom scroll progress scoped to the scroll zone only
   const scrollZoneProgress = useMotionValue(0);
 
   useEffect(() => {
     const onScroll = () => {
-      const scrollZoneEnd = window.innerHeight * 5; // 500vh
+      const scrollZoneEnd = window.innerHeight * SCROLL_ZONE_SCROLLABLE_FACTOR;
       if (scrollZoneEnd > 0) {
         scrollZoneProgress.set(Math.min(window.scrollY / scrollZoneEnd, 1));
       }
@@ -77,7 +79,7 @@ export default function Home() {
       {/* ── Logo Full Section — scrolls in as next page after animation ── */}
       <section
         className="relative flex items-center justify-center overflow-hidden"
-        style={{ zIndex: 10, minHeight: '100vh', backgroundColor: '#111827' }}
+        style={{ zIndex: 10, minHeight: '100vh', backgroundColor: '#546B41' }}
       >
         <div className="flex items-center justify-center px-8">
           <img

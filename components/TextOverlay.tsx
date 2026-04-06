@@ -29,6 +29,7 @@ export default function TextOverlay({
   );
 
   const justifyMap = { left: 'justify-start', center: 'justify-center', right: 'justify-end' };
+  const itemsMap = { left: 'items-start', center: 'items-center', right: 'items-end' };
   const textAlignMap = { left: 'text-left', center: 'text-center', right: 'text-right' };
   const paddingMap = {
     left: 'pl-8 pr-8 lg:pl-20 lg:pr-0',
@@ -42,7 +43,7 @@ export default function TextOverlay({
       className={`fixed inset-0 z-20 flex items-center pointer-events-none ${justifyMap[align]}`}
     >
       <div
-        className={`max-w-lg ${paddingMap[align]} ${textAlignMap[align]} flex flex-col items-center`}
+        className={`max-w-lg ${paddingMap[align]} ${textAlignMap[align]} flex flex-col ${itemsMap[align]}`}
         style={{ textShadow: '0 2px 20px rgba(0,0,0,0.4)' }}
       >
         {logoSrc && (
@@ -51,9 +52,8 @@ export default function TextOverlay({
             alt="SkyCielo"
             className="mb-8 h-16 md:h-20 lg:h-24 object-contain"
             style={{
-              filter: 'brightness(0) invert(1)',
-              dropShadow: '0 2px 20px rgba(0,0,0,0.4)',
-            } as React.CSSProperties}
+              filter: 'brightness(0) invert(1) drop-shadow(0 2px 20px rgba(0,0,0,0.4))',
+            }}
           />
         )}
         <h2
