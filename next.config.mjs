@@ -1,14 +1,14 @@
 /** @type {import('next').NextConfig} */
-const isGithubActions = process.env.GITHUB_ACTIONS === 'true';
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 const nextConfig = {
   output: 'export',
   trailingSlash: true,
-  basePath: isGithubActions ? '/SkyCielo' : '',
-  assetPrefix: isGithubActions ? '/SkyCielo/' : '',
+  basePath,
+  assetPrefix: basePath ? `${basePath}/` : '',
   images: { unoptimized: true },
   env: {
-    NEXT_PUBLIC_BASE_PATH: isGithubActions ? '/SkyCielo' : '',
+    NEXT_PUBLIC_BASE_PATH: basePath,
   },
 };
 export default nextConfig;

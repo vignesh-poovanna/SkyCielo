@@ -102,22 +102,13 @@ export default function VillaScroll({ onLoadProgress, onLoaded }: Props) {
     };
 
     const runLoader = async () => {
-      // 1. Prioritized Frame 0
+      // 1. Prioritized Frame 0 — release loading screen immediately after first frame
       await loadFrame(0, 'high');
+      onLoadProgress(1 / TOTAL);
+      onLoaded(); // Show the site as soon as frame 0 is ready
 
-      // 2. Eager Batch (first 40 frames)
-      const eagerPromises = [];
-      for (let i = 1; i < BATCH_SIZE; i++) {
-        eagerPromises.push(loadFrame(i));
-      }
-      await Promise.all(eagerPromises);
-      
-      onLoadProgress(BATCH_SIZE / TOTAL);
-      onLoaded(); // Signal ready to interact
-
-      // 3. Background Batch (remaining frames)
-      // We load these sequentially or in small chunks to avoid saturating the network
-      for (let i = BATCH_SIZE; i < TOTAL; i++) {
+      // 2. Load remaining frames in background without blocking
+      for (let i = 1; i < TOTAL; i++) {
         if (!active) break;
         await loadFrame(i);
         if (i % 20 === 0 || i === TOTAL - 1) {

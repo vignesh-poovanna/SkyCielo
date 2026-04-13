@@ -1,6 +1,7 @@
 'use client';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { useEffect } from 'react';
+import { asset } from '@/lib/constants';
 
 interface Props {
   progress: number;
@@ -30,7 +31,7 @@ export default function LoadingScreen({ progress, isLoaded }: Props) {
           className="fixed inset-0 z-[200] bg-white flex flex-col items-center justify-center gap-8"
         >
           {/* Logo */}
-          <img src="/logo.png" alt="SkyCielo" className="h-12 object-contain opacity-80" />
+          <img src={asset('/logo.png')} alt="SkyCielo" className="h-12 object-contain opacity-80" />
 
           {/* Spinner */}
           <div className="relative w-14 h-14">
