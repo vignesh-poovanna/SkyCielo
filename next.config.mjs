@@ -7,5 +7,8 @@ const nextConfig = {
   basePath: isGithubActions ? '/SkyCielo' : '',
   assetPrefix: isGithubActions ? '/SkyCielo/' : '',
   images: { unoptimized: true },
+  env: {
+    NEXT_PUBLIC_BASE_PATH: isGithubActions ? '/SkyCielo' : '',
+  },
 };
 export default nextConfig;

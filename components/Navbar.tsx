@@ -1,5 +1,6 @@
 'use client';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { asset } from '@/lib/constants';
 
 export default function Navbar() {
   const { scrollY } = useScroll();
@@ -26,7 +27,7 @@ export default function Navbar() {
       <div className="relative flex items-center justify-between px-8 lg:px-16 py-6 w-full">
         <a href="/" className="pointer-events-auto">
         <img
-          src="/logo.png"
+          src={asset('/logo.png')}
           alt="SkyCielo"
           className="h-8 object-contain"
           style={{

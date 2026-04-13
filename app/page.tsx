@@ -6,6 +6,7 @@ import TextOverlay from '@/components/TextOverlay';
 import LoadingScreen from '@/components/LoadingScreen';
 import Navbar from '@/components/Navbar';
 import Image from 'next/image';
+import { asset } from '@/lib/constants';
 
 import { SCROLL_ZONE_SCROLLABLE_FACTOR } from '@/lib/constants';
 
@@ -54,7 +55,7 @@ export default function Home() {
         subtext="SkyCielo finds you spaces that move you."
         align="center"
         initialOpacity={1}
-        logoSrc="/logo.png"
+        logoSrc={asset('/logo.png')}
       />
 
       {/* ── Story: Overlay 2 — Hall (22–43%) ── */}
@@ -91,7 +92,7 @@ export default function Home() {
       >
         <div className="flex items-center justify-center px-8">
           <img
-            src="/logo-full.png"
+            src={asset('/logo-full.png')}
             alt="SkyCielo Full Logo"
             className="w-[70vw] max-w-2xl object-contain"
           />

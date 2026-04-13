@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef } from 'react';
 import { useReducedMotion } from 'framer-motion';
-import { SCROLL_ZONE_VH, SCROLL_ZONE_SCROLLABLE_FACTOR } from '@/lib/constants';
+import { SCROLL_ZONE_VH, SCROLL_ZONE_SCROLLABLE_FACTOR, asset } from '@/lib/constants';
 
 const TOTAL = 240;
 const BATCH_SIZE = 40; // Load 40 frames eagerly to dismiss loading screen
@@ -97,7 +97,7 @@ export default function VillaScroll({ onLoadProgress, onLoaded }: Props) {
           loadedCount++;
           resolve();
         };
-        img.src = `/frames/s${s + 1}_${String(f + 1).padStart(3, '0')}.png`;
+        img.src = asset(`/frames/s${s + 1}_${String(f + 1).padStart(3, '0')}.png`);
       });
     };
 
