@@ -97,7 +97,7 @@ export default function VillaScroll({ onLoadProgress, onLoaded }: Props) {
           loadedCount++;
           resolve();
         };
-        img.src = asset(`/frames/s${s + 1}_${String(f + 1).padStart(3, '0')}.png`);
+        img.src = asset(`/frames/s${s + 1}_${String(f + 1).padStart(3, '0')}.jpg`);
       });
     };
 

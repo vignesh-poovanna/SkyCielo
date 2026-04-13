@@ -153,7 +153,7 @@ export default function Home() {
         }}>
           <div style={{ position: 'relative', overflow: 'hidden', minHeight: 520 }}>
             <Image
-              src="/about-vision.png"
+              src="/about-vision.webp"
               alt="Sky Cielo Vision — European-inspired community"
               fill
               style={{ objectFit: 'cover', objectPosition: 'center' }}
@@ -213,7 +213,7 @@ export default function Home() {
         }}>
           <div style={{ position: 'relative', overflow: 'hidden', minHeight: 520 }}>
             <Image
-              src="/about-mission.png"
+              src="/about-mission.webp"
               alt="Sky Cielo Mission — premium European villa"
               fill
               style={{ objectFit: 'cover', objectPosition: 'center' }}
@@ -274,7 +274,7 @@ export default function Home() {
         }}>
           <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
             <Image
-              src="/about-commit.png"
+              src="/about-commit.webp"
               alt="Sky Cielo commitment — refined villa interior"
               fill
               style={{ objectFit: 'cover', objectPosition: 'center top' }}
@@ -490,7 +490,7 @@ export default function Home() {
               {/* The Image from the layout */}
               <div style={{ position: 'relative', width: '100%', height: 320, marginTop: 20 }}>
                  <Image
-                    src="/contact-image.png"
+                    src="/contact-image.webp"
                     alt="Minimalist luxury interior"
                     fill
                     style={{ objectFit: 'cover' }}
