@@ -1,9 +1,11 @@
 /** @type {import('next').NextConfig} */
+const isGithubActions = process.env.GITHUB_ACTIONS === 'true';
+
 const nextConfig = {
   output: 'export',
   trailingSlash: true,
-  basePath: '/SkyCielo',
-  assetPrefix: '/SkyCielo/',
+  basePath: isGithubActions ? '/SkyCielo' : '',
+  assetPrefix: isGithubActions ? '/SkyCielo/' : '',
   images: { unoptimized: true },
 };
 export default nextConfig;
