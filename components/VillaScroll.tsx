@@ -101,19 +101,36 @@ export default function VillaScroll({ onLoadProgress, onLoaded }: Props) {
       });
     };
 
+    const UNLOCK_AT = Math.floor(TOTAL * 0.75); // release at 75% = 180 frames
+    const CONCURRENCY = 12; // parallel requests at a time
+    let unlocked = false;
+
     const runLoader = async () => {
-      // 1. Prioritized Frame 0 — release loading screen immediately after first frame
+      // Load frame 0 first so canvas has something to show immediately
       await loadFrame(0, 'high');
       onLoadProgress(1 / TOTAL);
-      onLoaded(); // Show the site as soon as frame 0 is ready
 
-      // 2. Load remaining frames in background without blocking
-      for (let i = 1; i < TOTAL; i++) {
+      // Load the rest in parallel batches of CONCURRENCY
+      const remaining = Array.from({ length: TOTAL - 1 }, (_, i) => i + 1);
+
+      for (let b = 0; b < remaining.length; b += CONCURRENCY) {
         if (!active) break;
-        await loadFrame(i);
-        if (i % 20 === 0 || i === TOTAL - 1) {
-          onLoadProgress(loadedCount / TOTAL);
+        const batch = remaining.slice(b, b + CONCURRENCY);
+        await Promise.all(batch.map(i => loadFrame(i)));
+
+        onLoadProgress(loadedCount / TOTAL);
+
+        // Unlock the site once 75% of frames are ready
+        if (!unlocked && loadedCount >= UNLOCK_AT) {
+          unlocked = true;
+          onLoaded();
         }
+      }
+
+      // Fallback: if somehow we never hit 75%, unlock anyway
+      if (!unlocked) {
+        unlocked = true;
+        onLoaded();
       }
     };
     runLoader();
