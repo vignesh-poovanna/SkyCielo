@@ -1,14 +1,13 @@
 'use client';
 import { useState, useCallback, useEffect } from 'react';
-import { motion, useScroll, useTransform, useMotionValue } from 'framer-motion';
+import { motion, useMotionValue } from 'framer-motion';
 import VillaScroll from '@/components/VillaScroll';
 import TextOverlay from '@/components/TextOverlay';
+import MobileLanding from '@/components/MobileLanding';
 import LoadingScreen from '@/components/LoadingScreen';
 import Navbar from '@/components/Navbar';
 import Image from 'next/image';
-import { asset } from '@/lib/constants';
-
-import { SCROLL_ZONE_SCROLLABLE_FACTOR } from '@/lib/constants';
+import { asset, SCROLL_ZONE_SCROLLABLE_FACTOR } from '@/lib/constants';
 
 const COMMIT_ITEMS = [
   { icon: '⌂', text: 'Curating thoughtfully planned layouts for future-ready homes' },
@@ -21,11 +20,20 @@ const COMMIT_ITEMS = [
 export default function Home() {
   const [loadProgress, setLoadProgress] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Custom scroll progress scoped to the scroll zone only
-  const scrollZoneProgress = useMotionValue(0);
-
+  // Detect mobile once on mount (SSR-safe)
   useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  // Desktop: scroll progress scoped to scroll zone
+  const scrollZoneProgress = useMotionValue(0);
+  useEffect(() => {
+    if (isMobile) return;
     const onScroll = () => {
       const scrollZoneEnd = window.innerHeight * SCROLL_ZONE_SCROLLABLE_FACTOR;
       if (scrollZoneEnd > 0) {
@@ -34,56 +42,66 @@ export default function Home() {
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, [scrollZoneProgress]);
+  }, [isMobile, scrollZoneProgress]);
 
   const handleProgress = useCallback((p: number) => setLoadProgress(p), []);
   const handleLoaded = useCallback(() => setIsLoaded(true), []);
+  // Mobile loaded callback — just unlock immediately
+  const handleMobileLoaded = useCallback(() => setIsLoaded(true), []);
 
   return (
     <>
       <LoadingScreen progress={loadProgress} isLoaded={isLoaded} />
-      <Navbar />
 
-      {/* Cinematic scroll zone */}
-      <VillaScroll onLoadProgress={handleProgress} onLoaded={handleLoaded} />
+      {/* ── MOBILE: fullscreen image slideshow, no scroll animation ── */}
+      {isMobile ? (
+        <MobileLanding onLoaded={handleMobileLoaded} />
+      ) : (
+        <>
+          <Navbar />
 
-      {/* ── Story: Overlay 1 — Fireplace (visible from 0, fade out 12–18%) ── */}
-      <TextOverlay
-        scrollYProgress={scrollZoneProgress}
-        fadeRange={[0, 0, 0.12, 0.18]}
-        heading="This is what home feels like."
-        subtext="SkyCielo finds you spaces that move you."
-        align="center"
-        initialOpacity={1}
-        logoSrc={asset('/logo.png')}
-      />
+          {/* ── DESKTOP: cinematic scroll animation ── */}
+          <VillaScroll onLoadProgress={handleProgress} onLoaded={handleLoaded} />
 
-      {/* ── Story: Overlay 2 — Hall (22–43%) ── */}
-      <TextOverlay
-        scrollYProgress={scrollZoneProgress}
-        fadeRange={[0.22, 0.27, 0.38, 0.43]}
-        heading="Crafted for the way you live."
-        subtext="Every property we represent is chosen for its soul, not just its size."
-        align="left"
-      />
+          {/* Overlay 1 — Fireplace */}
+          <TextOverlay
+            scrollYProgress={scrollZoneProgress}
+            fadeRange={[0, 0, 0.12, 0.18]}
+            heading="This is what home feels like."
+            subtext="SkyCielo finds you spaces that move you."
+            align="center"
+            initialOpacity={1}
+            logoSrc={asset('/logo.png')}
+          />
 
-      {/* ── Story: Overlay 3 — Hallway (47–68%) ── */}
-      <TextOverlay
-        scrollYProgress={scrollZoneProgress}
-        fadeRange={[0.47, 0.52, 0.63, 0.68]}
-        heading="Details that stay with you."
-        subtext="From the hallway to the horizon, nothing is overlooked."
-        align="right"
-      />
+          {/* Overlay 2 — Hall */}
+          <TextOverlay
+            scrollYProgress={scrollZoneProgress}
+            fadeRange={[0.22, 0.27, 0.38, 0.43]}
+            heading="Crafted for the way you live."
+            subtext="Every property we represent is chosen for its soul, not just its size."
+            align="left"
+          />
 
-      {/* ── Story: Overlay 4 — Exterior (72–98%) ── */}
-      <TextOverlay
-        scrollYProgress={scrollZoneProgress}
-        fadeRange={[0.72, 0.77, 0.93, 0.98]}
-        heading="Your next chapter starts here."
-        subtext="SkyCielo represents exceptional homes across city. This is the standard we hold."
-        align="center"
-      />
+          {/* Overlay 3 — Hallway */}
+          <TextOverlay
+            scrollYProgress={scrollZoneProgress}
+            fadeRange={[0.47, 0.52, 0.63, 0.68]}
+            heading="Details that stay with you."
+            subtext="From the hallway to the horizon, nothing is overlooked."
+            align="right"
+          />
+
+          {/* Overlay 4 — Exterior */}
+          <TextOverlay
+            scrollYProgress={scrollZoneProgress}
+            fadeRange={[0.72, 0.77, 0.93, 0.98]}
+            heading="Your next chapter starts here."
+            subtext="SkyCielo represents exceptional homes across city. This is the standard we hold."
+            align="center"
+          />
+        </>
+      )}
 
       {/* ── Logo Full Section — scrolls in as next page after animation ── */}
       <section
