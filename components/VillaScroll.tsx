@@ -52,11 +52,13 @@ export default function VillaScroll({ onLoadProgress, onLoaded }: Props) {
       ctx.drawImage(img, x, y, w, h);
     };
 
+    const isMobile = () => window.innerWidth <= 768;
+
     const loop = () => {
       if (shouldReduceMotion) return;
       const diff = target - current;
       if (Math.abs(diff) > 0.08) {
-        current += diff * 0.12;
+        current += diff * (isMobile() ? 0.3 : 0.12);
         drawFrame(current);
       }
       raf = requestAnimationFrame(loop);
