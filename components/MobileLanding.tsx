@@ -4,16 +4,15 @@ import { asset } from '@/lib/constants';
 
 const PANELS = [
   {
-    src: asset('/frames/s1_001.jpg'),
+    src: asset('/frames/s2_001.jpg'),
     label: 'Interior',
     number: '01',
     heading: 'This is what\nhome feels like.',
     sub: 'SkyCielo finds you spaces that move you.',
-    // Which horizontal slice to show when collapsed (image object-position x%)
     collapsedX: '20%',
   },
   {
-    src: asset('/frames/s2_001.jpg'),
+    src: asset('/frames/s3_001.jpg'),
     label: 'Hallway',
     number: '02',
     heading: 'Crafted for the\nway you live.',
@@ -21,7 +20,7 @@ const PANELS = [
     collapsedX: '50%',
   },
   {
-    src: asset('/frames/s3_001.jpg'),
+    src: asset('/frames/s3_080.jpg'),
     label: 'Exterior',
     number: '03',
     heading: 'Your next chapter\nstarts here.',
@@ -317,7 +316,28 @@ export default function MobileLanding({ onLoaded }: { onLoaded: () => void }) {
         />
       </div>
 
-      {/* ── Collapsed hint: "tap a panel" ── */}
+      {/* ── Disclaimer ── */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 14,
+          left: 0,
+          right: 0,
+          zIndex: 10,
+          display: 'flex',
+          justifyContent: 'center',
+          pointerEvents: 'none',
+          opacity: expanded !== null ? 0 : 0.45,
+          transition: 'opacity 400ms ease',
+          padding: '0 24px',
+        }}
+      >
+        <p style={{ fontSize: 8.5, letterSpacing: '0.1em', textAlign: 'center', color: 'rgba(245,240,232,0.5)', margin: 0, lineHeight: 1.5 }}>
+          Visuals are for representational purposes only. Actual properties may vary.
+        </p>
+      </div>
+
+      {/* ── Collapsed hint: "select a space" ── */}
       <div
         style={{
           position: 'absolute',
