@@ -2,185 +2,348 @@
 import { useState, useEffect, useRef } from 'react';
 import { asset } from '@/lib/constants';
 
-const SLIDES = [
+const PANELS = [
   {
     src: asset('/frames/s1_001.jpg'),
+    label: 'Interior',
+    number: '01',
     heading: 'This is what\nhome feels like.',
     sub: 'SkyCielo finds you spaces that move you.',
-    accent: '#b59a72',
+    // Which horizontal slice to show when collapsed (image object-position x%)
+    collapsedX: '20%',
   },
   {
     src: asset('/frames/s2_001.jpg'),
+    label: 'Hallway',
+    number: '02',
     heading: 'Crafted for the\nway you live.',
     sub: 'Every property chosen for its soul, not just its size.',
-    accent: '#b59a72',
+    collapsedX: '50%',
   },
   {
     src: asset('/frames/s3_001.jpg'),
+    label: 'Exterior',
+    number: '03',
     heading: 'Your next chapter\nstarts here.',
     sub: 'SkyCielo represents exceptional homes across the city.',
-    accent: '#b59a72',
+    collapsedX: '80%',
   },
 ];
 
-const DURATION = 4000; // ms per slide
+const GOLD = '#b59a72';
+const EASE = 'cubic-bezier(0.76, 0, 0.24, 1)';
+const ANIM = `700ms ${EASE}`;
 
 export default function MobileLanding({ onLoaded }: { onLoaded: () => void }) {
-  const [active, setActive] = useState(0);
-  const [prev, setPrev] = useState<number | null>(null);
-  const [transitioning, setTransitioning] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [expanded, setExpanded] = useState<number | null>(null);
+  const [textVisible, setTextVisible] = useState(false);
   const loadedRef = useRef(0);
+  const textTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Preload all 3 images then call onLoaded
+  // Preload all 3 images
   useEffect(() => {
-    SLIDES.forEach((s) => {
+    PANELS.forEach((p) => {
       const img = new Image();
-      img.src = s.src;
+      img.src = p.src;
       img.onload = img.onerror = () => {
         loadedRef.current++;
-        if (loadedRef.current >= SLIDES.length) onLoaded();
+        if (loadedRef.current >= PANELS.length) onLoaded();
       };
     });
   }, [onLoaded]);
 
-  const goTo = (next: number) => {
-    if (transitioning) return;
-    setTransitioning(true);
-    setPrev(active);
-    setActive(next);
-    setTimeout(() => {
-      setPrev(null);
-      setTransitioning(false);
-    }, 900);
+  const handleTap = (i: number) => {
+    if (expanded === i) {
+      // Collapse
+      setTextVisible(false);
+      setTimeout(() => setExpanded(null), 150);
+    } else {
+      setTextVisible(false);
+      setExpanded(i);
+      if (textTimer.current) clearTimeout(textTimer.current);
+      textTimer.current = setTimeout(() => setTextVisible(true), 550);
+    }
   };
 
-  // Auto-cycle
-  useEffect(() => {
-    timerRef.current = setTimeout(() => {
-      goTo((active + 1) % SLIDES.length);
-    }, DURATION);
-    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
-  }, [active, transitioning]); // eslint-disable-line
+  // Compute left% and width% for each panel
+  const getPanelPos = (i: number): { left: string; width: string } => {
+    if (expanded === null) {
+      return { left: `${(i / 3) * 100}%`, width: '33.333%' };
+    }
+    if (i === expanded) {
+      return { left: '0%', width: '100%' };
+    }
+    if (i < expanded) {
+      // Slide left off screen
+      return { left: '-34%', width: '33.333%' };
+    }
+    // Slide right off screen
+    return { left: '101%', width: '33.333%' };
+  };
 
   return (
-    <div style={{ position: 'relative', width: '100vw', height: '100svh', overflow: 'hidden', background: '#0f0e0c' }}>
+    <div
+      style={{
+        position: 'relative',
+        width: '100vw',
+        height: '100svh',
+        overflow: 'hidden',
+        background: '#0f0e0c',
+        fontFamily: "'Inter', sans-serif",
+      }}
+    >
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400&display=swap');
+        .shutter-panel { -webkit-tap-highlight-color: transparent; }
+        .shutter-panel:active { opacity: 0.92; }
+      `}</style>
 
-      {/* Previous slide fading out */}
-      {prev !== null && (
-        <div key={`prev-${prev}`} style={imgWrap(false)}>
-          <img src={SLIDES[prev].src} alt="" style={imgStyle} />
-        </div>
-      )}
+      {/* ── Panels ── */}
+      {PANELS.map((panel, i) => {
+        const { left, width } = getPanelPos(i);
+        const isExpanded = expanded === i;
+        const isOther = expanded !== null && !isExpanded;
 
-      {/* Active slide fading in */}
-      <div key={`active-${active}`} style={imgWrap(true)}>
-        <img src={SLIDES[active].src} alt="" style={imgStyle} />
-      </div>
-
-      {/* Dark gradient overlay */}
-      <div style={{
-        position: 'absolute', inset: 0, zIndex: 2,
-        background: 'linear-gradient(to bottom, rgba(10,9,8,0.55) 0%, rgba(10,9,8,0.15) 45%, rgba(10,9,8,0.72) 100%)',
-      }} />
-
-      {/* Logo top-center */}
-      <div style={{
-        position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10,
-        display: 'flex', justifyContent: 'center', paddingTop: 20,
-      }}>
-        <img src={asset('/logo.png')} alt="SkyCielo" style={{ height: 44, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
-      </div>
-
-      {/* Text block */}
-      <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 10,
-        padding: '0 28px 90px',
-        display: 'flex', flexDirection: 'column', gap: 12,
-      }}>
-        {/* Eyebrow label */}
-        <p style={{
-          fontFamily: "'Inter', sans-serif",
-          fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase',
-          color: SLIDES[active].accent, margin: 0,
-          opacity: transitioning ? 0 : 1,
-          transition: 'opacity 0.5s ease 0.4s',
-        }}>
-          Sky Cielo · {['Home', 'Living', 'Legacy'][active]}
-        </p>
-
-        {/* Heading */}
-        <h1 style={{
-          fontFamily: "'Cormorant Garamond', Georgia, serif",
-          fontSize: 'clamp(2.4rem, 10vw, 3.2rem)',
-          fontWeight: 300, lineHeight: 1.1, margin: 0,
-          color: '#f5f0e8',
-          whiteSpace: 'pre-line',
-          opacity: transitioning ? 0 : 1,
-          transform: transitioning ? 'translateY(12px)' : 'translateY(0)',
-          transition: 'opacity 0.55s ease 0.35s, transform 0.55s ease 0.35s',
-        }}>
-          {SLIDES[active].heading}
-        </h1>
-
-        {/* Subtext */}
-        <p style={{
-          fontFamily: "'Inter', sans-serif",
-          fontSize: '0.88rem', lineHeight: 1.6, margin: 0,
-          color: 'rgba(245,240,232,0.72)',
-          opacity: transitioning ? 0 : 1,
-          transition: 'opacity 0.5s ease 0.45s',
-        }}>
-          {SLIDES[active].sub}
-        </p>
-
-        {/* Dots */}
-        <div style={{ display: 'flex', gap: 8, marginTop: 16, alignItems: 'center' }}>
-          {SLIDES.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => { if (i !== active) goTo(i); }}
-              aria-label={`Go to slide ${i + 1}`}
+        return (
+          <div
+            key={i}
+            className="shutter-panel"
+            onClick={() => handleTap(i)}
+            style={{
+              position: 'absolute',
+              top: 0,
+              height: '100%',
+              left,
+              width,
+              overflow: 'hidden',
+              cursor: 'pointer',
+              transition: `left ${ANIM}, width ${ANIM}`,
+              zIndex: isExpanded ? 3 : 2,
+            }}
+          >
+            {/* Image — pans from slice to full on expand */}
+            <img
+              src={panel.src}
+              alt={panel.label}
               style={{
-                width: i === active ? 28 : 8, height: 8,
-                borderRadius: 4, border: 'none', cursor: 'pointer',
-                background: i === active ? SLIDES[active].accent : 'rgba(255,255,255,0.3)',
-                padding: 0,
-                transition: 'width 0.35s ease, background 0.35s ease',
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: `${isExpanded ? '50%' : panel.collapsedX} center`,
+                transition: `object-position ${ANIM}, transform ${ANIM}`,
+                transform: isExpanded ? 'scale(1.04)' : 'scale(1.0)',
+                display: 'block',
+                userSelect: 'none',
+                WebkitUserSelect: 'none',
               }}
             />
-          ))}
-        </div>
-      </div>
 
-      {/* Progress bar */}
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 2, zIndex: 11, background: 'rgba(255,255,255,0.1)' }}>
-        <div
-          key={active}
+            {/* Dark vignette — heavier when collapsed */}
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background: isExpanded
+                  ? 'linear-gradient(to bottom, rgba(10,9,8,0.45) 0%, rgba(10,9,8,0.05) 40%, rgba(10,9,8,0.75) 100%)'
+                  : 'linear-gradient(to bottom, rgba(10,9,8,0.7) 0%, rgba(10,9,8,0.3) 50%, rgba(10,9,8,0.8) 100%)',
+                transition: `background ${ANIM}`,
+              }}
+            />
+
+            {/* Collapsed state: vertical divider line on right (not last) */}
+            {!isExpanded && i < 2 && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '10%',
+                  right: 0,
+                  width: 1,
+                  height: '80%',
+                  background: `linear-gradient(to bottom, transparent, ${GOLD}55, transparent)`,
+                  opacity: isOther ? 0 : 1,
+                  transition: `opacity ${ANIM}`,
+                }}
+              />
+            )}
+
+            {/* Collapsed state: panel label (vertical text + number) */}
+            {!isExpanded && (
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: 40,
+                  left: 0,
+                  right: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: 8,
+                  opacity: isOther ? 0 : 1,
+                  transform: isOther ? 'translateY(10px)' : 'translateY(0)',
+                  transition: `opacity 400ms ease, transform 400ms ease`,
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 9,
+                    letterSpacing: '0.25em',
+                    textTransform: 'uppercase',
+                    color: GOLD,
+                    writingMode: 'vertical-rl',
+                    textOrientation: 'mixed',
+                    transform: 'rotate(180deg)',
+                  }}
+                >
+                  {panel.label}
+                </span>
+                <span
+                  style={{
+                    width: 1,
+                    height: 24,
+                    background: `linear-gradient(to bottom, ${GOLD}, transparent)`,
+                    display: 'block',
+                  }}
+                />
+                <span
+                  style={{
+                    fontSize: 9,
+                    letterSpacing: '0.2em',
+                    color: 'rgba(245,240,232,0.4)',
+                  }}
+                >
+                  {panel.number}
+                </span>
+              </div>
+            )}
+
+            {/* Expanded state: full text overlay */}
+            {isExpanded && (
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  padding: '0 28px 80px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 10,
+                  opacity: textVisible ? 1 : 0,
+                  transform: textVisible ? 'translateY(0)' : 'translateY(20px)',
+                  transition: 'opacity 500ms ease, transform 500ms ease',
+                  pointerEvents: 'none',
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: 10,
+                    letterSpacing: '0.35em',
+                    textTransform: 'uppercase',
+                    color: GOLD,
+                    margin: 0,
+                  }}
+                >
+                  Sky Cielo · {panel.label}
+                </p>
+                <h1
+                  style={{
+                    fontFamily: "'Cormorant Garamond', Georgia, serif",
+                    fontSize: 'clamp(2.2rem, 9vw, 3rem)',
+                    fontWeight: 300,
+                    lineHeight: 1.1,
+                    margin: 0,
+                    color: '#f5f0e8',
+                    whiteSpace: 'pre-line',
+                  }}
+                >
+                  {panel.heading}
+                </h1>
+                <div style={{ width: 40, height: 1, background: GOLD, margin: '4px 0' }} />
+                <p
+                  style={{
+                    fontSize: '0.85rem',
+                    lineHeight: 1.65,
+                    margin: 0,
+                    color: 'rgba(245,240,232,0.72)',
+                    maxWidth: 300,
+                  }}
+                >
+                  {panel.sub}
+                </p>
+                {/* Close hint */}
+                <p
+                  style={{
+                    fontSize: 9,
+                    letterSpacing: '0.25em',
+                    textTransform: 'uppercase',
+                    color: 'rgba(245,240,232,0.3)',
+                    margin: '12px 0 0',
+                  }}
+                >
+                  Tap to close
+                </p>
+              </div>
+            )}
+          </div>
+        );
+      })}
+
+      {/* ── Logo — top center, always visible ── */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 10,
+          display: 'flex',
+          justifyContent: 'center',
+          paddingTop: 22,
+          pointerEvents: 'none',
+        }}
+      >
+        <img
+          src={asset('/logo.png')}
+          alt="SkyCielo"
           style={{
-            height: '100%',
-            background: SLIDES[active].accent,
-            animation: `mobileProgress ${DURATION}ms linear forwards`,
+            height: 40,
+            objectFit: 'contain',
+            filter: 'brightness(0) invert(1)',
+            opacity: expanded !== null ? 0.6 : 1,
+            transition: `opacity ${ANIM}`,
           }}
         />
       </div>
 
-      {/* CSS keyframes injected inline */}
-      <style>{`
-        @keyframes mobileProgress { from { width: 0% } to { width: 100% } }
-      `}</style>
+      {/* ── Collapsed hint: "tap a panel" ── */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 72,
+          left: 0,
+          right: 0,
+          zIndex: 10,
+          display: 'flex',
+          justifyContent: 'center',
+          pointerEvents: 'none',
+          opacity: expanded !== null ? 0 : 1,
+          transition: `opacity 400ms ease`,
+        }}
+      >
+        <p
+          style={{
+            fontSize: 9,
+            letterSpacing: '0.3em',
+            textTransform: 'uppercase',
+            color: 'rgba(245,240,232,0.35)',
+            margin: 0,
+          }}
+        >
+          Select a space
+        </p>
+      </div>
     </div>
   );
 }
-
-const imgWrap = (isActive: boolean): React.CSSProperties => ({
-  position: 'absolute', inset: 0, zIndex: 1,
-  opacity: isActive ? 1 : 0,
-  transition: isActive ? 'opacity 0.9s ease' : 'opacity 0.6s ease',
-});
-
-const imgStyle: React.CSSProperties = {
-  width: '100%', height: '100%',
-  objectFit: 'cover', objectPosition: 'center',
-  display: 'block',
-};
