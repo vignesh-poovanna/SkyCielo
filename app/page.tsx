@@ -7,6 +7,7 @@ import MobileLanding from '@/components/MobileLanding';
 import LoadingScreen from '@/components/LoadingScreen';
 import Navbar from '@/components/Navbar';
 import Image from 'next/image';
+import emailjs from '@emailjs/browser';
 import { asset, SCROLL_ZONE_SCROLLABLE_FACTOR } from '@/lib/constants';
 
 const COMMIT_ITEMS = [
@@ -48,6 +49,29 @@ export default function Home() {
   const handleLoaded = useCallback(() => setIsLoaded(true), []);
   // Mobile loaded callback — just unlock immediately
   const handleMobileLoaded = useCallback(() => setIsLoaded(true), []);
+
+  const [isSending, setIsSending] = useState(false);
+
+  const handleSendEmail = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (isSending) return;
+    setIsSending(true);
+
+    try {
+      await emailjs.sendForm(
+        'service_1su27qd', 
+        'template_er8s48d', 
+        e.currentTarget, 
+        'BZzrfOZicjofLmCvV'
+      );
+      alert('Thank you! Your enquiry has been received.');
+      (e.target as HTMLFormElement).reset();
+    } catch (error) {
+      alert('Failed to send enquiry. Please try again or reach out through phone/email directly.');
+    } finally {
+      setIsSending(false);
+    }
+  };
 
   return (
     <>
@@ -412,45 +436,61 @@ export default function Home() {
                    Get in touch with us for any enquiries<br />and questions
                  </p>
 
-                 {/* Contact Form — hidden */}
-                 <form 
-                   onSubmit={(e) => {
-                     e.preventDefault();
-                     alert("Contact form will be wired up to send an email to vigneshpoovannaas@gmail.com!");
-                   }}
-                   style={{ display: 'none', flexDirection: 'column', gap: 24, margin: '40px 0', maxWidth: 360 }}
-                 >
-                    <input 
-                      type="text" 
-                      placeholder="Name" 
-                      required
-                      className="w-full bg-transparent border-0 border-b border-[#0f0e0c]/20 py-2 text-[0.95rem] text-[#0f0e0c] outline-none focus:border-[#0f0e0c] focus:ring-0 transition-colors placeholder:text-[#0f0e0c]/40"
-                    />
-                    <input 
-                      type="tel" 
-                      placeholder="Phone Number" 
-                      required
-                      className="w-full bg-transparent border-0 border-b border-[#0f0e0c]/20 py-2 text-[0.95rem] text-[#0f0e0c] outline-none focus:border-[#0f0e0c] focus:ring-0 transition-colors placeholder:text-[#0f0e0c]/40"
-                    />
-                    <input 
-                      type="email" 
-                      placeholder="Email" 
-                      required
-                      className="w-full bg-transparent border-0 border-b border-[#0f0e0c]/20 py-2 text-[0.95rem] text-[#0f0e0c] outline-none focus:border-[#0f0e0c] focus:ring-0 transition-colors placeholder:text-[#0f0e0c]/40"
-                    />
-                    <textarea 
-                      placeholder="Your Query"
-                      required
-                      rows={3} 
-                      className="w-full bg-transparent border-0 border-b border-[#0f0e0c]/20 py-2 text-[0.95rem] text-[#0f0e0c] outline-none focus:border-[#0f0e0c] focus:ring-0 transition-colors resize-none placeholder:text-[#0f0e0c]/40"
-                    />
-                    <button 
-                      type="submit" 
-                      className="self-start mt-2 px-8 py-3 bg-[#0f0e0c] text-[#f5f0e8] text-[0.9rem] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-                    >
-                      Send Message
-                    </button>
-                 </form>
+                  {/* Contact Form */}
+                  <form 
+                    onSubmit={handleSendEmail}
+                    style={{ display: 'flex', flexDirection: 'column', gap: 24, margin: '40px 0', maxWidth: 360 }}
+                  >
+                     {/* Hidden variables mapped to your template tags */}
+                     <input type="hidden" name="title" value="SkyCielo Website Enquiry" />
+                     <input type="hidden" name="time" value={new Date().toLocaleString()} />
+                     <input type="hidden" name="name" value="" />
+                     <input type="hidden" name="email" value="" />
+
+                     <input 
+                       type="text" 
+                       name="from_name" // Maps to {{from_name}}
+                       placeholder="Name" 
+                       required
+                       className="w-full bg-transparent border-0 border-b border-[#0f0e0c]/20 py-2 text-[0.95rem] text-[#0f0e0c] outline-none focus:border-[#0f0e0c] focus:ring-0 transition-colors placeholder:text-[#0f0e0c]/40"
+                       onChange={(e) => {
+                         const form = e.currentTarget.form;
+                         if (form) (form.elements.namedItem('name') as HTMLInputElement).value = e.currentTarget.value;
+                       }}
+                     />
+                     <input 
+                       type="tel" 
+                       name="phone_number"
+                       placeholder="Phone Number" 
+                       required
+                       className="w-full bg-transparent border-0 border-b border-[#0f0e0c]/20 py-2 text-[0.95rem] text-[#0f0e0c] outline-none focus:border-[#0f0e0c] focus:ring-0 transition-colors placeholder:text-[#0f0e0c]/40"
+                     />
+                     <input 
+                       type="email" 
+                       name="reply_to" // Maps to {{reply_to}}
+                       placeholder="Email" 
+                       required
+                       className="w-full bg-transparent border-0 border-b border-[#0f0e0c]/20 py-2 text-[0.95rem] text-[#0f0e0c] outline-none focus:border-[#0f0e0c] focus:ring-0 transition-colors placeholder:text-[#0f0e0c]/40"
+                       onChange={(e) => {
+                         const form = e.currentTarget.form;
+                         if (form) (form.elements.namedItem('email') as HTMLInputElement).value = e.currentTarget.value;
+                       }}
+                     />
+                     <textarea 
+                       name="message" // Maps to {{message}}
+                       placeholder="Your Query"
+                       required
+                       rows={3} 
+                       className="w-full bg-transparent border-0 border-b border-[#0f0e0c]/20 py-2 text-[0.95rem] text-[#0f0e0c] outline-none focus:border-[#0f0e0c] focus:ring-0 transition-colors resize-none placeholder:text-[#0f0e0c]/40"
+                     />
+                     <button 
+                       type="submit" 
+                       disabled={isSending}
+                       className="self-start mt-2 px-8 py-3 bg-[#0f0e0c] text-[#f5f0e8] text-[0.9rem] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
+                     >
+                       {isSending ? 'Sending...' : 'Send Message'}
+                     </button>
+                  </form>
               </div>
 
               {/* Bottom Left: Copyright */}
@@ -522,4 +562,3 @@ export default function Home() {
     </>
   );
 }
-
