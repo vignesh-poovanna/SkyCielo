@@ -58,21 +58,50 @@ export default function VillaScroll({ onLoadProgress, onLoaded }: Props) {
       if (shouldReduceMotion) return;
       const diff = target - current;
       if (Math.abs(diff) > 0.08) {
-        current += diff * (isMobile() ? 0.3 : 0.12);
+        current += diff * 0.12;
         drawFrame(current);
       }
       raf = requestAnimationFrame(loop);
     };
     if (!shouldReduceMotion) raf = requestAnimationFrame(loop);
 
+    // ── Desktop: scroll-position driven ──
     const onScroll = () => {
-      if (shouldReduceMotion) return;
+      if (shouldReduceMotion || isMobile()) return;
       const scrollZoneEnd = window.innerHeight * SCROLL_ZONE_SCROLLABLE_FACTOR;
       if (scrollZoneEnd > 0) {
         target = Math.min((window.scrollY / scrollZoneEnd) * (TOTAL - 1), TOTAL - 1);
       }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
+
+    // ── Mobile: touch-swipe driven (one swipe = fixed frame step) ──
+    const FRAMES_PER_SWIPE = 18; // frames advanced per swipe gesture
+    const SWIPE_THRESHOLD  = 30; // px minimum swipe distance to count
+    let touchStartY = 0;
+    let touchLastY  = 0;
+    let swipeLocked = false;
+
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY;
+      touchLastY  = touchStartY;
+      swipeLocked = false;
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (!isMobile() || swipeLocked) return;
+      const dy = touchLastY - e.touches[0].clientY; // positive = swipe up (advance)
+      if (Math.abs(dy) < SWIPE_THRESHOLD) return;
+      swipeLocked = true; // one step per gesture
+      const step = dy > 0 ? FRAMES_PER_SWIPE : -FRAMES_PER_SWIPE;
+      target = Math.max(0, Math.min(target + step, TOTAL - 1));
+    };
+
+    const onTouchEnd = () => { swipeLocked = false; };
+
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchmove',  onTouchMove,  { passive: true });
+    window.addEventListener('touchend',   onTouchEnd,   { passive: true });
 
     const onResize = () => {
       setSize();
@@ -142,6 +171,9 @@ export default function VillaScroll({ onLoadProgress, onLoaded }: Props) {
       cancelAnimationFrame(raf);
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onResize);
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove',  onTouchMove);
+      window.removeEventListener('touchend',   onTouchEnd);
       for (let i = 0; i < frames.length; i++) {
         frames[i] = null;
       }
