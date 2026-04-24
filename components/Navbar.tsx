@@ -25,7 +25,11 @@ export default function Navbar() {
       />
 
       <div className="relative flex items-center justify-between px-8 lg:px-16 py-6 w-full">
-        <a href="/" className="pointer-events-auto">
+        <a
+          href="/"
+          className="pointer-events-auto"
+          onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+        >
         <img
           src={asset('/logo.png')}
           alt="SkyCielo"

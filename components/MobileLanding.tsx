@@ -95,6 +95,7 @@ export default function MobileLanding({ onLoaded }: { onLoaded: () => void }) {
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400&display=swap');
         .shutter-panel { -webkit-tap-highlight-color: transparent; }
         .shutter-panel:active { opacity: 0.92; }
+        @keyframes scrollBob { 0%,100% { transform: translateY(0); opacity:0.6; } 50% { transform: translateY(5px); opacity:1; } }
       `}</style>
 
       {/* ── Panels ── */}
@@ -307,13 +308,27 @@ export default function MobileLanding({ onLoaded }: { onLoaded: () => void }) {
           src={asset('/logo.png')}
           alt="SkyCielo"
           style={{
-            height: 40,
+            height: 56,
             objectFit: 'contain',
             filter: 'brightness(0) invert(1)',
             opacity: expanded !== null ? 0.6 : 1,
             transition: `opacity ${ANIM}`,
           }}
         />
+      </div>
+
+      {/* ── Scroll indicator ── */}
+      <div style={{
+        position: 'absolute', bottom: 54, left: 0, right: 0, zIndex: 10,
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+        pointerEvents: 'none',
+        opacity: expanded !== null ? 0 : 1,
+        transition: 'opacity 400ms ease',
+      }}>
+        <p style={{ fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.3)', margin: 0 }}>Scroll</p>
+        <svg width="14" height="20" viewBox="0 0 14 20" fill="none" style={{ animation: 'scrollBob 1.6s ease-in-out infinite' }}>
+          <path d="M7 1v12M2 9l5 5 5-5" stroke="rgba(181,154,114,0.6)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
       </div>
 
       {/* ── Disclaimer ── */}
