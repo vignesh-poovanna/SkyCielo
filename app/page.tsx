@@ -394,13 +394,13 @@ export default function Home() {
                    Get in touch with us for any enquiries<br />and questions
                  </p>
 
-                 {/* Contact Form */}
+                 {/* Contact Form — hidden */}
                  <form 
                    onSubmit={(e) => {
                      e.preventDefault();
                      alert("Contact form will be wired up to send an email to vigneshpoovannaas@gmail.com!");
                    }}
-                   style={{ display: 'flex', flexDirection: 'column', gap: 24, margin: '40px 0', maxWidth: 360 }}
+                   style={{ display: 'none', flexDirection: 'column', gap: 24, margin: '40px 0', maxWidth: 360 }}
                  >
                     <input 
                       type="text" 
