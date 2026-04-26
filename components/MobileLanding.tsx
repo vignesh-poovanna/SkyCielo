@@ -334,7 +334,7 @@ export default function MobileLanding({ onLoaded }: { onLoaded: () => void }) {
           src={asset('/logo-full.png')}
           alt="SkyCielo"
           style={{
-            width: '72vw',
+            width: '90vw',
             maxWidth: 320,
             objectFit: 'contain',
             filter: 'brightness(0) invert(1)',
