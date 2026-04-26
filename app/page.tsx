@@ -437,7 +437,7 @@ export default function Home() {
             }}>
               <iframe
                 title="SkyCielo Property Location"
-                src="https://maps.google.com/maps?q=13.1948125,77.4885625&z=16&output=embed"
+                src="https://maps.google.com/maps?q=13.194969183799914,77.48856249999999&z=16&output=embed"
                 width="100%" height="100%"
                 style={{ border: 0, display: 'block', filter: 'grayscale(20%) contrast(1.05)' }}
                 allowFullScreen
