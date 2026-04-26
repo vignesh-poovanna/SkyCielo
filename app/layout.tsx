@@ -7,8 +7,11 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'SkyCielo — Exceptional European Homes',
-  description: 'SkyCielo represents the finest residential properties across Europe. Discover homes of extraordinary character and craftsmanship.',
+  title: 'SkyCielo - Exceptional European themed properties in Bangalore',
+  description: 'SkyCielo represents the finest residential properties across Bangalore. Discover homes of extraordinary character and craftsmanship.',
+  icons: {
+    icon: '/logo.png',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
