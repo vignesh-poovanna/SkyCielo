@@ -316,6 +316,33 @@ export default function MobileLanding({ onLoaded }: { onLoaded: () => void }) {
         />
       </div>
 
+      {/* ── Full logo — centered in the middle of the screen ── */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 10,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          pointerEvents: 'none',
+          opacity: expanded !== null ? 0 : 1,
+          transition: `opacity ${ANIM}`,
+        }}
+      >
+        <img
+          src={asset('/logo-full.png')}
+          alt="SkyCielo"
+          style={{
+            width: '72vw',
+            maxWidth: 320,
+            objectFit: 'contain',
+            filter: 'brightness(0) invert(1)',
+            opacity: 0.92,
+          }}
+        />
+      </div>
+
       {/* ── Disclaimer ── */}
       <div
         style={{

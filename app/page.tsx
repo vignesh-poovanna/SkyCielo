@@ -129,7 +129,7 @@ export default function Home() {
 
       {/* ── Logo Full Section — scrolls in as next page after animation ── */}
       <section
-        className="relative flex items-center justify-center overflow-hidden"
+        className="relative hidden md:flex items-center justify-center overflow-hidden"
         style={{ zIndex: 10, minHeight: '100vh', backgroundColor: '#D3BBAF' }}
       >
         <div className="flex items-center justify-center px-8">

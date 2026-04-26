@@ -1,0 +1,1 @@
+﻿                   style={{ display: 'none', flexDirection: 'column', gap: 24, margin: '40px 0', maxWidth: 360 }}
