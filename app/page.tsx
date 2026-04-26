@@ -617,7 +617,7 @@ export default function Home() {
                        </a>
                        {/* WhatsApp */}
                        <a
-                         href="https://api.whatsapp.com/send?phone=919036078155&text=Hi%20I%27m%20interested%20in%20Learning%20more%20About%20Prestige%20New%20Launch%20Varthur%20(Bangalore).%20Please%20Share%20Details"
+                         href="https://api.whatsapp.com/send?phone=919036078155&text=Hi%20I%27m%20interested%20in%20Learning%20more%20About%20SkyCielo%20(Bangalore).%20Please%20Share%20Details"
                          target="_blank" rel="noopener noreferrer"
                          style={{ display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none', color: 'inherit', fontSize: '0.95rem', fontWeight: 500 }}
                        >
