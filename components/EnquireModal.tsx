@@ -29,7 +29,7 @@ export default function EnquireModal() {
     setSlideX(nx);
     if (nx >= MAX) {
       setSliding(false);
-      window.open('https://wa.me/919036078155', '_blank');
+      window.open('https://api.whatsapp.com/send?phone=919036078155&text=Hi%20I%27m%20interested%20in%20Learning%20more%20About%20SkyCielo%20(Bangalore).%20Please%20Share%20Details', '_blank');
       setTimeout(() => setSlideX(0), 600);
     }
   };
