@@ -402,6 +402,78 @@ export default function Home() {
 
         <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #b59a72 40%, transparent)', margin: '0 8vw' }} />
 
+        {/* ── Our Property Section ─────────────────────────────────────────── */}
+        <section style={{
+          background: '#0f0e0c', padding: 'clamp(60px,8vw,100px) 8vw',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 40,
+        }}>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7, ease: 'easeOut' }}
+            style={{ textAlign: 'center' }}
+          >
+            <p style={{ letterSpacing: '0.3em', fontSize: 11, color: '#546B41', textTransform: 'uppercase', marginBottom: 14 }}>
+              Find Us Here
+            </p>
+            <h2 style={{
+              fontFamily: "'Cormorant Garamond', Georgia, serif",
+              fontSize: 'clamp(2rem,3.5vw,3.2rem)', fontWeight: 300,
+              color: '#f5f0e8', margin: '0 0 16px', lineHeight: 1.15,
+            }}>
+              Our Property
+            </h2>
+            <div style={{ width: 40, height: 1, background: '#b59a72', margin: '0 auto' }} />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 32 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.8, delay: 0.15, ease: 'easeOut' }}
+            style={{ width: '100%', maxWidth: 900 }}
+          >
+            <div style={{
+              width: '100%', aspectRatio: '16/9',
+              border: '1px solid rgba(181,154,114,0.2)',
+              overflow: 'hidden', boxShadow: '0 16px 60px rgba(0,0,0,0.5)',
+            }}>
+              <iframe
+                title="SkyCielo Property Location"
+                src="https://maps.google.com/maps?q=48.6807824,2.5026637&z=16&output=embed"
+                width="100%" height="100%"
+                style={{ border: 0, display: 'block', filter: 'grayscale(20%) contrast(1.05)' }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, marginTop: 16 }}>
+              <p style={{ fontSize: '0.8rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.35)', textAlign: 'center', margin: 0 }}>
+                Sky Cielo Realty Ventures Plots, Sonnenahalli - 560089
+              </p>
+              <a
+                href="https://maps.app.goo.gl/7Yym4rJS64xnQmWS9"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 8,
+                  padding: '10px 24px',
+                  border: '1px solid rgba(181,154,114,0.4)',
+                  color: '#b59a72', fontSize: '0.8rem',
+                  letterSpacing: '0.12em', textTransform: 'uppercase',
+                  textDecoration: 'none',
+                  transition: 'background .2s, border-color .2s, color .2s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(181,154,114,0.12)'; e.currentTarget.style.borderColor = '#b59a72'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(181,154,114,0.4)'; }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b59a72" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Open in Google Maps
+              </a>
+            </div>
+          </motion.div>
+        </section>
+
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #b59a72 40%, transparent)', margin: '0 8vw' }} />
+
         {/* ── Contact Section (Matched to Image Layout) ────────────────────── */}
         <section 
           id="contact"
