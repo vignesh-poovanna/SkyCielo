@@ -62,11 +62,27 @@ export default function EnquireModal() {
     e.preventDefault();
     if (isSending) return;
     setIsSending(true);
+
+    const form = e.currentTarget;
+    const getData = (name: string) =>
+      (form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement | null)?.value ?? '';
+
+    const templateParams = {
+      from_name:    getData('from_name'),
+      name:         getData('from_name'),
+      phone_number: getData('phone_number'),
+      reply_to:     getData('reply_to'),
+      email:        getData('reply_to'),
+      message:      getData('message'),
+      time:         new Date().toLocaleString(),
+      title:        'SkyCielo Modal Enquiry',
+    };
+
     try {
-      await emailjs.sendForm(
+      await emailjs.send(
         'service_1su27qd',
         'template_er8s48d',
-        e.currentTarget,
+        templateParams,
         'BZzrfOZicjofLmCvV'
       );
       alert('Thank you! Your enquiry has been received.');
@@ -138,26 +154,17 @@ export default function EnquireModal() {
 
           {/* Form */}
           <form ref={formRef} onSubmit={handleSend} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-            <input type="hidden" name="title" value="SkyCielo Modal Enquiry" />
-            <input type="hidden" name="time"  value={new Date().toLocaleString()} />
-            <input type="hidden" name="name"  value="" />
-            <input type="hidden" name="email" value="" />
-
             {([
-              { type: 'text',  name: 'from_name',    placeholder: 'Name',         sync: 'name' },
-              { type: 'tel',   name: 'phone_number', placeholder: 'Phone Number', sync: '' },
-              { type: 'email', name: 'reply_to',     placeholder: 'Email',        sync: 'email' },
-            ] as { type: string; name: string; placeholder: string; sync: string }[]).map(f => (
+              { type: 'text',  name: 'from_name',    placeholder: 'Name',         },
+              { type: 'tel',   name: 'phone_number', placeholder: 'Phone Number', },
+              { type: 'email', name: 'reply_to',     placeholder: 'Email',        },
+            ] as { type: string; name: string; placeholder: string }[]).map(f => (
               <input
                 key={f.name}
                 type={f.type}
                 name={f.name}
                 placeholder={f.placeholder}
                 required
-                onChange={f.sync ? e => {
-                  const hidden = e.currentTarget.form?.elements.namedItem(f.sync) as HTMLInputElement | null;
-                  if (hidden) hidden.value = e.currentTarget.value;
-                } : undefined}
                 style={{
                   width: '100%', background: 'transparent',
                   border: 'none', borderBottom: '1px solid rgba(15,14,12,0.2)',

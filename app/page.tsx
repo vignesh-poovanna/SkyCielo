@@ -57,11 +57,26 @@ export default function Home() {
     if (isSending) return;
     setIsSending(true);
 
+    const form = e.currentTarget;
+    const getData = (name: string) =>
+      (form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement | null)?.value ?? '';
+
+    const templateParams = {
+      from_name:    getData('from_name'),
+      name:         getData('from_name'),
+      phone_number: getData('phone_number'),
+      reply_to:     getData('reply_to'),
+      email:        getData('reply_to'),
+      message:      getData('message'),
+      time:         new Date().toLocaleString(),
+      title:        'SkyCielo Website Enquiry',
+    };
+
     try {
-      await emailjs.sendForm(
-        'service_1su27qd', 
-        'template_er8s48d', 
-        e.currentTarget, 
+      await emailjs.send(
+        'service_1su27qd',
+        'template_er8s48d',
+        templateParams,
         'BZzrfOZicjofLmCvV'
       );
       alert('Thank you! Your enquiry has been received.');
@@ -513,22 +528,12 @@ export default function Home() {
                     onSubmit={handleSendEmail}
                     style={{ display: 'flex', flexDirection: 'column', gap: 24, margin: '40px 0', maxWidth: 360 }}
                   >
-                     {/* Hidden variables mapped to your template tags */}
-                     <input type="hidden" name="title" value="SkyCielo Website Enquiry" />
-                     <input type="hidden" name="time" value={new Date().toLocaleString()} />
-                     <input type="hidden" name="name" value="" />
-                     <input type="hidden" name="email" value="" />
-
                      <input 
                        type="text" 
-                       name="from_name" // Maps to {{from_name}}
+                       name="from_name"
                        placeholder="Name" 
                        required
                        className="w-full bg-transparent border-0 border-b border-[#0f0e0c]/20 py-2 text-[0.95rem] text-[#0f0e0c] outline-none focus:border-[#0f0e0c] focus:ring-0 transition-colors placeholder:text-[#0f0e0c]/40"
-                       onChange={(e) => {
-                         const form = e.currentTarget.form;
-                         if (form) (form.elements.namedItem('name') as HTMLInputElement).value = e.currentTarget.value;
-                       }}
                      />
                      <input 
                        type="tel" 
@@ -539,14 +544,10 @@ export default function Home() {
                      />
                      <input 
                        type="email" 
-                       name="reply_to" // Maps to {{reply_to}}
+                       name="reply_to"
                        placeholder="Email" 
                        required
                        className="w-full bg-transparent border-0 border-b border-[#0f0e0c]/20 py-2 text-[0.95rem] text-[#0f0e0c] outline-none focus:border-[#0f0e0c] focus:ring-0 transition-colors placeholder:text-[#0f0e0c]/40"
-                       onChange={(e) => {
-                         const form = e.currentTarget.form;
-                         if (form) (form.elements.namedItem('email') as HTMLInputElement).value = e.currentTarget.value;
-                       }}
                      />
                      <textarea 
                        name="message" // Maps to {{message}}
