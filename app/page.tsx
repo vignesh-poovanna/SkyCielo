@@ -74,10 +74,10 @@ export default function Home() {
 
     try {
       await emailjs.send(
-        'service_1su27qd',
-        'template_er8s48d',
+        'service_xxtgucx',
+        'template_qvxehgi',
         templateParams,
-        'BZzrfOZicjofLmCvV'
+        'fXXCajCjxetSFxcUz'
       );
       alert('Thank you! Your enquiry has been received.');
       (e.target as HTMLFormElement).reset();
