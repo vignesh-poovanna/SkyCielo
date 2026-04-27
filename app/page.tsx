@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useCallback, useEffect } from 'react';
 import { motion, useMotionValue } from 'framer-motion';
 import VillaScroll from '@/components/VillaScroll';
@@ -583,15 +583,8 @@ export default function Home() {
              style={{ display: 'flex', flexDirection: 'column', gap: 60 }}
            >
               
-              {/* 2x2 Grid using CSS Grid */}
+              {/* Contact Info Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-[32px] sm:gap-y-[40px] gap-x-[20px]">
-                 {/* Item 1: Phone/General (adapted to Phone) */}
-                 <div>
-                    <h3 style={{ fontSize: '0.85rem', color: 'rgba(15, 14, 12, 0.5)', fontWeight: 400, marginBottom: 12 }}>phone</h3>
-                    <p style={{ margin: 0, fontSize: '0.95rem', fontWeight: 500, lineHeight: 1.6 }}>
-                       <a href="tel:+919036078155" style={{ textDecoration: 'none', color: 'inherit' }}>+91 90360 78155</a>
-                    </p>
-                 </div>
 
                  {/* Item 2: Email */}
                  <div>

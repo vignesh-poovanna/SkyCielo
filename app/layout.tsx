@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import EnquireModal from '@/components/EnquireModal';
+import WhatsAppFAB from '@/components/WhatsAppFAB';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -22,7 +23,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body>{children}<EnquireModal /></body>
+      <body>
+        {children}
+        <EnquireModal />
+        <WhatsAppFAB />
+      </body>
     </html>
   );
 }

@@ -5,56 +5,9 @@ import emailjs from '@emailjs/browser';
 export default function EnquireModal() {
   const [open, setOpen] = useState(false);
   const [isSending, setIsSending] = useState(false);
-  // Slide state
-  const [slideX, setSlideX] = useState(0);
-  const [sliding, setSliding] = useState(false);
-  const sliderRef = useRef<HTMLDivElement>(null);
-  const thumbRef = useRef<HTMLDivElement>(null);
-  const startX = useRef(0);
-  const TRACK_W = 320; // px — matches slider width below
-  const THUMB_W = 52;
-  const MAX = TRACK_W - THUMB_W - 4; // 4 = 2*border
 
   // Open on every load after 4s delay
   useEffect(() => { const t = setTimeout(() => setOpen(true), 4000); return () => clearTimeout(t); }, []);
-
-  // ── Slide handlers ──────────────────────────────────────────────
-  const onDown = (clientX: number) => {
-    setSliding(true);
-    startX.current = clientX - slideX;
-  };
-  const onMove = (clientX: number) => {
-    if (!sliding) return;
-    const nx = Math.max(0, Math.min(clientX - startX.current, MAX));
-    setSlideX(nx);
-    if (nx >= MAX) {
-      setSliding(false);
-      window.open('https://api.whatsapp.com/send?phone=919036078155&text=Hi%20I%27m%20interested%20in%20Learning%20more%20About%20SkyCielo%20(Bangalore).%20Please%20Share%20Details', '_blank');
-      setTimeout(() => setSlideX(0), 600);
-    }
-  };
-  const onUp = () => {
-    setSliding(false);
-    if (slideX < MAX) setSlideX(0);
-  };
-
-  useEffect(() => {
-    if (!sliding) return;
-    const mm = (e: MouseEvent) => onMove(e.clientX);
-    const tm = (e: TouchEvent) => onMove(e.touches[0].clientX);
-    const mu = () => onUp();
-    window.addEventListener('mousemove', mm);
-    window.addEventListener('touchmove', tm);
-    window.addEventListener('mouseup', mu);
-    window.addEventListener('touchend', mu);
-    return () => {
-      window.removeEventListener('mousemove', mm);
-      window.removeEventListener('touchmove', tm);
-      window.removeEventListener('mouseup', mu);
-      window.removeEventListener('touchend', mu);
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sliding, slideX]);
 
   // ── Email send ──────────────────────────────────────────────────
   const formRef = useRef<HTMLFormElement>(null);
@@ -95,8 +48,6 @@ export default function EnquireModal() {
   };
 
   if (!open) return null;
-
-  const progress = slideX / MAX; // 0–1
 
   return (
     <>
@@ -211,55 +162,7 @@ export default function EnquireModal() {
             </button>
           </form>
 
-          {/* WhatsApp Slide */}
-          <div style={{ marginTop: 20 }}>
-            <div
-              ref={sliderRef}
-              style={{
-                position: 'relative', width: '100%', height: 52,
-                background: `linear-gradient(to right, #25D366 ${progress * 100}%, rgba(15,14,12,0.08) ${progress * 100}%)`,
-                borderRadius: 26, overflow: 'hidden',
-                userSelect: 'none', cursor: 'default',
-                transition: sliding ? 'none' : 'background .3s',
-                border: '1px solid rgba(15,14,12,0.12)',
-              }}
-            >
-              {/* Label */}
-              <span style={{
-                position: 'absolute', inset: 0,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '0.8rem', fontWeight: 500, letterSpacing: '0.06em',
-                color: progress > 0.5 ? '#fff' : 'rgba(15,14,12,0.5)',
-                pointerEvents: 'none',
-                transition: 'color .2s',
-                paddingLeft: THUMB_W,
-              }}>
-                {progress >= 1 ? '✓ Opening WhatsApp…' : 'Slide to Enquire on WhatsApp ➜'}
-              </span>
 
-              {/* Thumb */}
-              <div
-                ref={thumbRef}
-                onMouseDown={e => onDown(e.clientX)}
-                onTouchStart={e => onDown(e.touches[0].clientX)}
-                style={{
-                  position: 'absolute', top: 2, left: 2 + slideX,
-                  width: THUMB_W - 4, height: THUMB_W - 4,
-                  borderRadius: '50%',
-                  background: '#25D366',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  cursor: 'grab', boxShadow: '0 2px 12px rgba(37,211,102,0.4)',
-                  transition: sliding ? 'none' : 'left .3s cubic-bezier(.22,1,.36,1)',
-                  zIndex: 2,
-                }}
-              >
-                {/* WhatsApp SVG icon */}
-                <svg width="22" height="22" viewBox="0 0 32 32" fill="#fff">
-                  <path d="M16 3C8.82 3 3 8.82 3 16c0 2.36.63 4.6 1.74 6.54L3 29l6.64-1.73A12.93 12.93 0 0 0 16 29c7.18 0 13-5.82 13-13S23.18 3 16 3Zm7.11 18.11c-.3.84-1.76 1.6-2.41 1.7-.65.1-1.26.46-4.26-.89-3.6-1.6-5.9-5.26-6.08-5.51-.17-.24-1.42-1.89-1.42-3.6 0-1.71.9-2.55 1.22-2.9.3-.33.67-.41.9-.41.22 0 .45.01.64.01.21 0 .5-.08.78.6.3.71 1.02 2.48 1.11 2.66.09.18.15.39.03.63-.12.24-.18.39-.36.6-.18.21-.38.47-.54.63-.18.18-.37.37-.16.73.21.36.93 1.54 2 2.5 1.37 1.22 2.53 1.6 2.89 1.78.36.18.57.15.78-.09.21-.24.9-1.05 1.14-1.41.24-.36.48-.3.81-.18.33.12 2.1 .99 2.46 1.17.36.18.6.27.69.42.09.15.09.87-.21 1.71Z"/>
-                </svg>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
